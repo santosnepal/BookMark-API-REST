@@ -7,6 +7,7 @@ import { PrismaService } from '../src/prisma/prisma.service';
 import * as pactum from 'pactum';
 import { AppModule } from '../src/app.module';
 import { AuthDto } from '../src/auth/dto';
+import { editUserDto } from '../src/user/dto';
 describe('App End to end', () => {
   let app: INestApplication;
   let prisma: PrismaService;
@@ -101,8 +102,44 @@ describe('App End to end', () => {
           .post('auth/signin')
           .withBody(dto)
           .expectStatus(200)
-          .stores('userAt', 'access_token');
+          .stores(
+            'userAccessToken',
+            'accessToken',
+          );
       });
+    });
+  });
+  describe('User', () => {
+    describe('Get me', () => {
+      it('should get current user', () => {
+        return pactum
+          .spec()
+          .get('users/me')
+          .withHeaders({
+            Authorization:
+              'Bearer $S{userAccessToken}',
+          })
+          .expectStatus(200);
+      });
+    });
+  });
+  describe('Edit user', () => {
+    it('should edit user', () => {
+      const dto: editUserDto = {
+        firstname: 'Santosh',
+        email: 'santosh@gmail.com',
+      };
+      return pactum
+        .spec()
+        .patch('users/me/edit')
+        .withHeaders({
+          Authorization:
+            'Bearer $S{userAccessToken}',
+        })
+        .withBody(dto)
+        .expectStatus(200)
+        .expectBodyContains(dto.firstname)
+        .expectBodyContains(dto.email);
     });
   });
 });
