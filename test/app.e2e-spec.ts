@@ -236,8 +236,7 @@ describe('App End to end', () => {
             Authorization:
               'Bearer $S{userAccessToken}',
           })
-          .expectStatus(204)
-          .inspect();
+          .expectStatus(204);
       });
 
       it('should get empty bookmarks', () => {
