@@ -2,7 +2,7 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
@@ -52,12 +52,6 @@ export class AuthService {
         data: {
           email: dto.email,
           hash: hsh,
-          firstname: dto.firstname
-            ? dto.firstname
-            : null,
-          lastName: dto.lastname
-            ? dto.lastname
-            : null,
         },
       });
       const { id, email, firstname, lastName } =
